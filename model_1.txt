@@ -1,0 +1,19 @@
+
+model {
+
+  # Estimation of probability of detection
+team1 ~ dbin(q, x)       # seen by team a
+team2 ~ dbin((1-q) * q, x)  # missed by team a, seen by team b
+
+  for(i in 1:N) {
+    n[i] ~ dpois(lambda * area[i] * period[i])
+d[i] <- n[i] / area[i] / period[i]
+y[i] ~ dbin(q, n[i])
+
+}
+  # Priors:
+x0 ~ dunif(0, 1000)
+x <- trunc(x0)
+lambda ~ dunif(0, 3)
+q ~ dunif(0, 1)
+} 

@@ -1,0 +1,31 @@
+
+model {
+
+  # Estimation of probability of detection
+team1 ~ dbin(q, x)       # seen by team a
+team2 ~ dbin((1-q) * q, x)  # missed by team a, seen by team b
+
+for(i in 1:N) {
+    # realised total number of new nests per unit effort
+n[i] ~ dpois(lambda[i] * area[i] * period[i])
+
+# expected total number of new nests
+    log(lambda[i]) <- a0 +
+  a1*elevation[i] +
+  a2*forest[i]
+
+# observed total number of new nests
+y[i] ~ dbin(q, n[i])
+
+# ou density
+    d[i] <- n[i] / area[i] / period[i]
+}
+
+  # Priors:
+x0 ~ dunif(0, 1000)
+x <- trunc(x0)
+q ~ dunif(0, 1)
+a0 ~ dunif(-10, 10)
+a1 ~ dunif(-10, 10)
+a2 ~ dunif(-10, 10)
+} 
